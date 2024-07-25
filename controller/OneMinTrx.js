@@ -25,7 +25,6 @@ exports.generatedTimeEveryAfterEveryOneMinTRX = (io) => {
           ? 60 - currentTime.getSeconds()
           : currentTime.getSeconds();
       io.emit("onemintrx", timeToSend);
-      // console.log(timeToSend);
       // if (timeToSend === 0) io.emit("result", result);
       if (false) {
         // timeToSend === 58

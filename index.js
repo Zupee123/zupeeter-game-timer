@@ -2,7 +2,7 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
-const todoRoutes = require("./routes/todos");
+const todoRoutes = require("./routes/Routes");
 const moment = require("moment");
 // const soment = require("moment-timezone");
 require("dotenv").config();
@@ -36,9 +36,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
+const allRoutes = require("./routes/Routes");
 
-app.use("/api/v1", todoRoutes);
-
+app.use("", allRoutes);
 io.on("connection", (socket) => {});
 
 let x = true;

@@ -1,4 +1,3 @@
-const superagent = require("superagent");
 
 module.exports.successResponse = function (result, msg) {
   return {
