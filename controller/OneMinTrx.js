@@ -295,13 +295,6 @@ exports.insertOneMinTrxResultByCron = () => {
   });
 };
 
-function randomStr(len, arr) {
-  let ans = "";
-  for (let i = len; i > 0; i--) {
-    ans += arr[Math.floor(Math.random() * arr.length)];
-  }
-  return ans;
-}
 async function getGeneratedTronResultIfFailButRandom(
   datetoAPISend,
   isAlreadyHit,
@@ -316,36 +309,7 @@ async function getGeneratedTronResultIfFailButRandom(
     Math.floor(Math.random() * (4 - 0 + 1)) + 0
   );
 
-  fd.append("hash", `**${obj?.hash.slice(-4)}`);
-  fd.append("digits", `${obj?.hash.slice(-5)}`);
-  fd.append("number", obj?.number);
-  fd.append("time", moment(time).format("HH:mm:ss"));
-  let prevalue = `${moment(time).format("HH:mm:ss")}`;
-  const newString = obj?.hash;
-  let num = null;
-  for (let i = newString?.length - 1; i >= 0; i--) {
-    if (!isNaN(parseInt(newString[i]))) {
-      num = parseInt(newString[i]);
-      break;
-    }
-  }
-  fd.append("slotid", num);
-  fd.append("overall", JSON.stringify(obj));
   try {
-    if (String(isAlreadyHit) === String(prevalue)) return;
-    // const response = await axios.post(
-    //   "https://admin.zupeeter.com/Apitrx/insert_one_trx",
-    //   fd
-    // );
-    const newString = obj.hash;
-    let num = null;
-    for (let i = newString.length - 1; i >= 0; i--) {
-      if (!isNaN(parseInt(newString[i]))) {
-        num = parseInt(newString[i]);
-        break;
-      }
-    }
-    result = num + 1;
     insertIntoTrxonetable(manual_result, time, obj, (err, results) => {
       if (err) {
         console.error("Error inserting data: ", err);
@@ -359,90 +323,47 @@ async function getGeneratedTronResultIfFailButRandom(
   }
 }
 
-async function getGeneratedTronResultIfFail(
-  datetoAPISend,
-  isAlreadyHit,
-  result,
-  manual_result,
-  time
-) {
-  setTimeout(async () => {
-    await axios
-      .get(
-        `https://apilist.tronscanapi.com/api/block`,
-        {
-          params: {
-            sort: "-balance",
-            start: "0",
-            limit: "20",
-            producer: "",
-            number: "",
-            start_timestamp: datetoAPISend,
-            end_timestamp: datetoAPISend,
-          },
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((res) => {
-        if (res?.data?.data?.[0]) {
-          const obj = res?.data?.data?.[0];
-          const fd = new FormData();
-          fd.append("hash", `**${obj?.hash.slice(-4)}`);
-          fd.append("digits", `${obj?.hash.slice(-5)}`);
-          fd.append("number", obj?.number);
-          fd.append("time", moment(time).format("HH:mm:ss"));
-          let prevalue = `${moment(time).format("HH:mm:ss")}`;
-          const newString = obj?.hash;
-          let num = null;
-          for (let i = newString?.length - 1; i >= 0; i--) {
-            if (!isNaN(parseInt(newString[i]))) {
-              num = parseInt(newString[i]);
-              break;
-            }
-          }
-          fd.append("slotid", num);
-          fd.append("overall", JSON.stringify(obj));
-          try {
-            if (String(isAlreadyHit) === String(prevalue)) return;
-            // const response = await axios.post(
-            //   "https://admin.zupeeter.com/Apitrx/insert_one_trx",
-            //   fd
-            // );
-            const newString = obj.hash;
-            let num = null;
-            for (let i = newString.length - 1; i >= 0; i--) {
-              if (!isNaN(parseInt(newString[i]))) {
-                num = parseInt(newString[i]);
-                break;
-              }
-            }
-            result = num + 1;
-            insertIntoTrxonetable(manual_result, time, obj, (err, results) => {
-              if (err) {
-                console.error("Error inserting data: ", err);
-              } else {
-                console.log("Data inserted successfully: ", results);
-              }
-            });
-            isAlreadyHit = prevalue;
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      })
-      .catch((e) => {
-        console.log("second error in tron api ");
-        // console.log(e);
-      });
-  }, [2000]);
-}
-
 async function insertIntoTrxonetable(manual_result, time, obj, callback) {
-  const newString = obj.hash;
+  if (!obj?.hash) {
+    obj = {
+      hash: "0000000003c9a564d25473a75f10663e28ec2af72e6e5f16d413ddekjdsflja45",
+      number: 65234895,
+      size: 68325,
+      timestamp: 1721285448000,
+      txTrieRoot: "25ff7WnEyFkEm9edoVw84FBoYoiYExudyCFzTUarVz2G1bPVjm",
+      parentHash:
+        "0000000003c9a5639ef20261042c150fd3885b7148a77d6428be9129622191a4",
+      witnessId: 0,
+      witnessAddress: "TJBtdYunmQkeK5KninwgcjuK1RPDhyUWBZ",
+      nrOfTrx: 283,
+      nrOfTrx: 283,
+      witnessName: "JD Investment",
+      version: "30",
+      fee: 265.16438,
+      confirmed: false,
+      nrOfTrx: 283,
+      witnessName: "JD Investment",
+      version: "30",
+      nrOfTrx: 283,
+      witnessName: "JD Investment",
+      version: "30",
+      nrOfTrx: 283,
+      witnessName: "JD Investment",
+      witnessName: "JD Investment",
+      version: "30",
+      fee: 265.16438,
+      confirmed: false,
+      confirmations: 3,
+      netUsage: 83776,
+      energyUsage: 4107654,
+      blockReward: 16,
+      voteReward: 160,
+      revert: false,
+    };
+  }
+  const newString =
+    obj?.hash ||
+    "0000000003c9a564d25473a75f10663e28ec2af72e6e5f16d413ddekjdsflja45";
   let num = null;
   for (let i = newString.length - 1; i >= 0; i--) {
     if (!isNaN(parseInt(newString[i]))) {
@@ -452,10 +373,10 @@ async function insertIntoTrxonetable(manual_result, time, obj, callback) {
   }
 
   let timee = moment(time).format("HH:mm:ss");
-  let hash = `**${obj.hash.slice(-4)}`;
+  let hash = `**${obj?.hash?.slice(-4) || "ja45"}`;
   let overall = JSON.stringify(obj);
-  let trdigit = `${obj.hash.slice(-5)}`;
-  let tr_number = obj.number;
+  let trdigit = `${obj?.hash.slice(-5) || "lja45"}`;
+  let tr_number = obj?.number || 65234895;
 
   ///////////////////////  update num /////////////////////
 
