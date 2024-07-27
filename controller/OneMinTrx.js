@@ -212,7 +212,6 @@ exports.insertOneMinTrxResultByCron = () => {
                       }
                     }
                   );
-                  isAlreadyHit = prevalue;
                 } catch (e) {
                   console.log(e);
                 }
