@@ -236,7 +236,7 @@ exports.insertOneMinTrxResultByCron = () => {
                 time
               );
             });
-        }, [6000]);
+        }, [4000]);
     } catch (e) {
       console.log(e);
     }
